@@ -62,3 +62,12 @@ test-quick:
 	php artisan test --filter GlobalPlotTest
 	php artisan test --filter CharacterTest
 	php artisan test --filter AIServiceStubTest
+
+# Запуск HTTP тестов
+test-http:
+	php artisan test --filter RealHttpTest
+	php artisan test --filter HttpStatusTest
+
+# Запуск всех тестов включая HTTP
+test-all:
+	php artisan test
