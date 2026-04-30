@@ -1,0 +1,38 @@
+#!/bin/bash
+
+echo "Запуск всех тестов..."
+
+temp_dir=$(mktemp -d)
+
+git show testing:context_service/Makefile > "$temp_dir/Makefile"
+git archive testing context_service/tests | tar -x -C "$temp_dir"
+git archive testing context_service/scripts | tar -x -C "$temp_dir" 2>/dev/null
+
+
+[ -f context_service/Makefile ] && cp context_service/Makefile "$temp_dir/Makefile.original"
+[ -d context_service/tests ] && mv context_service/tests "$temp_dir/tests.original"
+[ -d context_service/scripts ] && mv context_service/scripts "$temp_dir/scripts.original"
+
+cp "$temp_dir/Makefile" context_service/
+cp -r "$temp_dir/context_service/tests" context_service/ 2>/dev/null
+cp -r "$temp_dir/context_service/scripts" context_service/ 2>/dev/null
+
+chmod +x context_service/scripts/*.sh 2>/dev/null
+
+cd context_service
+if make test; then
+    echo "Все тесты успешно пройдены!"
+    result=0
+else
+    echo "Тесты не пройдены!"
+    result=1
+fi
+
+[ -f "$temp_dir/Makefile.original" ] && cp "$temp_dir/Makefile.original" Makefile
+[ -d "$temp_dir/tests.original" ] && rm -rf tests && mv "$temp_dir/tests.original" tests
+[ -d "$temp_dir/scripts.original" ] && rm -rf scripts && mv "$temp_dir/scripts.original" scripts
+
+
+rm -rf "$temp_dir"
+
+exit $result
