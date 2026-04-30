@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  context-server:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./context_service:/app/context_service
+      - storage_data:/app/context_service/storage
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/app/context_service/database/database.sqlite
+
+volumes:
+  storage_data:
