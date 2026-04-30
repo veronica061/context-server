@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    memoryLimit: 1G
+    paths:
+        - app
+        - tests
+        - public/webhook.php
+    excludePaths:
+        - tests/mock-server
+        - storage
+        - vendor

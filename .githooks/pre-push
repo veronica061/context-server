@@ -1,0 +1,18 @@
+#!/bin/bash
+echo "Запуск PHPStan перед push..."
+
+cd "$(git rev-parse --git-dir)/.." || exit 1
+
+if [ -f "context_service/vendor/autoload.php" ]; then
+    export AUTOLOAD_FILE="context_service/vendor/autoload.php"
+fi
+
+./vendor/bin/phpstan analyse ./context_service/app --level=5 --memory-limit=1G --autoload-file=context_service/vendor/autoload.php
+./vendor/bin/phpstan analyse ./context_service/database --level=5 --memory-limit=1G --autoload-file=context_service/vendor/autoload.php
+
+if [ $? -ne 0 ]; then
+    echo "Возникли ошибки. Исправьте их перед запуском."
+    exit 1
+fi
+
+exit 0
